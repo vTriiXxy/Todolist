@@ -1,9 +1,44 @@
-# Archivos de entorno
+# ==============================================================================
+# GITIGNORE PARA PROYECTO DJANGO (TaskFlow / Todolist)
+# ==============================================================================
+
+# Base de datos local
+*.sqlite3
+db.sqlite3
+db.sqlite3-journal
+
+# Variables de entorno y credenciales sensibles
 .env
+.env.*
+!.env.example
 
-# Entorno virtual
+# Entornos virtuales de Python
 venv/
+.venv/
+env/
+ENV/
 
-# Archivos de Python compilados
+# Archivos compilados y caché de Python
 __pycache__/
+*.py[cod]
+*$py.class
 *.pyc
+
+# Archivos estáticos generados para producción (collectstatic) y medios
+staticfiles/
+media/
+
+# Registros y depuración
+*.log
+
+# Archivos y directorios de editores (VS Code, JetBrains, etc.)
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Archivos del sistema operativo (Windows, macOS)
+.DS_Store
+Thumbs.db
+desktop.ini

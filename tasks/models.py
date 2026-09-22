@@ -14,8 +14,5 @@ class Task(models.Model):
     fecha_creacion = models.DateTimeField(default=timezone.now)
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente')
 
-    def get_estado_display(self):
-        return dict(self.ESTADO_CHOICES)[self.estado]
-
     def __str__(self):
         return self.titulo

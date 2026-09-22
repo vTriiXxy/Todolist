@@ -1,0 +1,51 @@
+LICENCIA DE USO Y DISTRIBUCIÓN DE SOFTWARE
+================================================================================
+Copyright (c) 2025 - 2026 Cristopher Macaya (vTriiXxy).
+Todos los derechos reservados.
+
+Por la presente se concede permiso, de manera gratuita, a cualquier persona que
+obtenga una copia de este software y de los archivos de documentación asociados
+(el "Software"), para utilizar, ejecutar, estudiar, copiar y bifurcar (fork) el
+Software para fines educativos, personales y de desarrollo, sujeto de forma
+estricta e ineludible a las siguientes condiciones:
+
+--------------------------------------------------------------------------------
+1. ATRIBUCIÓN OBLIGATORIA E INALTERABILIDAD DE FIRMA
+--------------------------------------------------------------------------------
+En cualquier uso, distribución, copia, despliegue en servidores o proyectos
+derivados (tanto en formato de código fuente como en formato compilado o ejecutable),
+se DEBE mantener de manera íntegra, visible, inalterada y explícita la firma de
+autoría y los avisos de copyright originales:
+
+    "© 2025 - 2026 Cristopher Macaya (vTriiXxy) • Todos los derechos reservados.
+     Diseñado & Creado con ❤️"
+
+En aplicaciones web o interfaces de usuario, esta firma DEBE permanecer visible
+en el pie de página (footer) o sección de créditos accesible de la interfaz gráfica.
+Queda expresamente prohibida la eliminación, modificación, ocultación o reemplazo
+de dicha atribución sin la autorización previa y por escrito del autor.
+
+--------------------------------------------------------------------------------
+2. INTEGRIDAD DEL REPOSITORIO ORIGINAL Y POLÍTICA DE CONTRIBUCIÓN
+--------------------------------------------------------------------------------
+Queda estrictamente prohibido realizar envíos directos (`git push`), creación de ramas,
+modificaciones o alteraciones no autorizadas directamente sobre el repositorio original
+del autor (https://github.com/vTriiXxy).
+
+Cualquier cambio, sugerencia o mejora que terceros deseen realizar DEBE llevarse a cabo
+exclusivamente mediante una bifurcación externa (`fork`) en sus propias cuentas, y
+únicamente podrá ser evaluada mediante la apertura formal de una solicitud de incorporación
+(`Pull Request`), la cual queda sujeta a la revisión, criterio y aprobación exclusiva
+del autor original.
+
+--------------------------------------------------------------------------------
+3. LIMITACIÓN DE RESPONSABILIDAD Y EXENCIÓN DE GARANTÍA
+--------------------------------------------------------------------------------
+EL SOFTWARE SE PROPORCIONA "TAL CUAL" ("AS IS"), SIN GARANTÍA DE NINGÚN TIPO,
+EXPRESA O IMPLÍCITA, INCLUYENDO, PERO SIN LIMITARSE A, LAS GARANTÍAS DE
+COMERCIABILIDAD, IDONEIDAD PARA UN PROPÓSITO PARTICULAR Y NO INFRACCIÓN.
+
+EN NINGÚN CASO EL AUTOR O TITULAR DE LOS DERECHOS DE AUTOR SERÁ RESPONSABLE DE
+NINGUNA RECLAMACIÓN, DAÑO U OTRA RESPONSABILIDAD, YA SEA EN UNA ACCIÓN DE
+CONTRATO, AGRAVIO O DE OTRO TIPO, QUE SURJA DE O EN CONEXIÓN CON EL SOFTWARE
+O EL USO U OTROS TRATOS EN EL SOFTWARE.

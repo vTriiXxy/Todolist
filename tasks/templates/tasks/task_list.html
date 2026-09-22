@@ -1,81 +1,312 @@
+{% extends 'tasks/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Tareas</title>
-    <!-- Mantenemos Bootstrap solo para el sistema de rejilla (row, col-*) -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Enlace a nuestra nueva hoja de estilos moderna -->
-    <link rel="stylesheet" href="{% static 'tasks/css/modern-styles.css' %}">
-</head>
-<body>
-    <div class="container-fluid my-4">
-        <h1 class="main-title">TO DO LIST</h1>
 
-        <div class="row justify-content-center">
-            <!-- Columna del Formulario (Izquierda) -->
-            <div class="col-lg-4 col-md-10 mb-4">
-                <div class="card">
-                    <h2 class="section-title">Agregar Nueva Tarea</h2>
-                    <form method="post" novalidate>
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="{{ form.titulo.id_for_label }}" class="form-label">Título</label>
-                            {{ form.titulo }}
-                        </div>
-                        <div class="form-group">
-                            <label for="{{ form.descripcion.id_for_label }}" class="form-label">Descripción</label>
-                            {{ form.descripcion }}
-                        </div>
-                        <div class="form-group">
-                            <label for="{{ form.estado.id_for_label }}" class="form-label">Estado</label>
-                            {{ form.estado }}
-                        </div>
-                        <div class="button-group">
-                            <button type="submit" class="btn btn-primary" style="width: 100%;">Agregar Tarea</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+{% block title %}TaskFlow | Panel de Tareas{% endblock %}
 
-            <!-- Columna de Tareas (Derecha) -->
-            <div class="col-lg-8 col-md-10">
-                <h2 class="section-title">Tareas Existentes</h2>
-                <div class="row">
-                    {% for task in tasks reversed %}
-                        <div class="col-lg-6 mb-4">
-                            <div class="card">
-                                <h4 class="task-title">{{ task.titulo }}</h4>
-                                <p class="task-description">{{ task.descripcion|truncatechars:100 }}</p>
-                                <div class="status-container">
-                                    Estado:
-                                    {% if task.estado == 'pendiente' %}
-                                        <span class="status-tag status-pending">{{ task.get_estado_display }}</span>
-                                    {% elif task.estado == 'en_progreso' %}
-                                        <span class="status-tag status-in-progress">{{ task.get_estado_display }}</span>
-                                    {% else %}
-                                        <span class="status-tag status-completed">{{ task.get_estado_display }}</span>
-                                    {% endif %}
-                                </div>
-                                <div class="button-group">
-                                    <a href="{% url 'task_detail' task.pk %}" class="btn btn-secondary">Ver</a>
-                                    <a href="{% url 'task_update' task.pk %}" class="btn btn-edit">Editar</a>
-                                    <a href="{% url 'task_delete' task.pk %}" class="btn btn-danger">Eliminar</a>
-                                </div>
-                            </div>
-                        </div>
-                    {% empty %}
-                        <div class="col-12">
-                            <div class="card text-center" style="padding: 40px;">
-                                <p>¡Aún no hay tareas! Añade una para empezar.</p>
-                            </div>
+{% block content %}
+<!-- Cabecera de Página -->
+<div class="page-header-block">
+    <h1 class="page-headline">Panel de Tareas</h1>
+    <p class="page-subheadline">Gestiona, prioriza y mantén el control de tus actividades diarias en un solo lugar.</p>
+</div>
+
+<!-- Métricas / Contadores del Dashboard -->
+<div class="metrics-row">
+    <div class="metric-card total">
+        <div class="metric-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            </svg>
+        </div>
+        <div class="metric-info">
+            <span class="metric-number" id="metric-total-count">0</span>
+            <span class="metric-label">Total Tareas</span>
+        </div>
+    </div>
+
+    <div class="metric-card pending">
+        <div class="metric-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+        </div>
+        <div class="metric-info">
+            <span class="metric-number" id="metric-pending-count">0</span>
+            <span class="metric-label">Pendientes</span>
+        </div>
+    </div>
+
+    <div class="metric-card in-progress">
+        <div class="metric-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+            </svg>
+        </div>
+        <div class="metric-info">
+            <span class="metric-number" id="metric-progress-count">0</span>
+            <span class="metric-label">En Progreso</span>
+        </div>
+    </div>
+
+    <div class="metric-card completed">
+        <div class="metric-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        </div>
+        <div class="metric-info">
+            <span class="metric-number" id="metric-completed-count">0</span>
+            <span class="metric-label">Completadas</span>
+        </div>
+    </div>
+</div>
+
+<!-- Layout Principal en Rejilla -->
+<div class="row">
+    <!-- Columna Izquierda: Formulario para Agregar Tarea -->
+    <div class="col-lg-4 col-md-12 mb-4">
+        <div class="card-panel">
+            <h2 class="card-panel-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+                Nueva Tarea
+            </h2>
+
+            <form method="post" novalidate id="create-task-form">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert-danger" role="alert">
+                        {% for error in form.non_field_errors %}
+                            <p class="mb-0">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="{{ form.titulo.id_for_label }}" class="form-label">Título de la tarea *</label>
+                    {{ form.titulo }}
+                    {% for error in form.titulo.errors %}
+                        <div class="form-error">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            {{ error }}
                         </div>
                     {% endfor %}
                 </div>
-            </div>
+
+                <div class="form-group">
+                    <label for="{{ form.descripcion.id_for_label }}" class="form-label">Descripción</label>
+                    {{ form.descripcion }}
+                    {% for error in form.descripcion.errors %}
+                        <div class="form-error">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.estado.id_for_label }}" class="form-label">Estado inicial</label>
+                    {{ form.estado }}
+                    {% for error in form.estado.errors %}
+                        <div class="form-error">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <button type="submit" class="btn-action btn-primary-gradient" id="btn-submit-task" style="width: 100%; margin-top: 10px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Guardar Tarea
+                </button>
+            </form>
         </div>
     </div>
-</body>
-</html>
+
+    <!-- Columna Derecha: Controles, Filtros y Lista de Tareas -->
+    <div class="col-lg-8 col-md-12">
+        <!-- Barra de Búsqueda y Filtros Rápidos -->
+        <div class="controls-bar">
+            <div class="search-wrapper">
+                <span class="search-icon">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </span>
+                <input type="text" id="task-search-input" class="search-input" placeholder="Buscar tarea por título o descripción..." autocomplete="off">
+            </div>
+
+            <div class="filter-pills" role="tablist">
+                <button type="button" class="filter-btn active" data-filter="all">Todas</button>
+                <button type="button" class="filter-btn" data-filter="pendiente">Pendientes</button>
+                <button type="button" class="filter-btn" data-filter="en_progreso">En Progreso</button>
+                <button type="button" class="filter-btn" data-filter="completada">Completadas</button>
+            </div>
+        </div>
+
+        <!-- Rejilla de Tarjetas de Tareas -->
+        <div class="row" id="tasks-grid">
+            {% for task in tasks reversed %}
+                <div class="col-md-6 mb-4 task-card-col" 
+                     data-estado="{{ task.estado }}" 
+                     data-title="{{ task.titulo|lower }}" 
+                     data-desc="{{ task.descripcion|default:''|lower }}">
+                    <div class="task-item-card" data-estado="{{ task.estado }}" id="task-card-{{ task.pk }}">
+                        <div class="task-card-header">
+                            <span class="status-pill {{ task.estado }}">
+                                <span class="status-dot"></span>
+                                {{ task.get_estado_display }}
+                            </span>
+                            <span class="task-date-badge" title="Fecha de creación">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                                {{ task.fecha_creacion|date:"d M, H:i" }}
+                            </span>
+                        </div>
+
+                        <h3 class="task-card-title">{{ task.titulo }}</h3>
+                        
+                        <p class="task-card-body">
+                            {% if task.descripcion %}
+                                {{ task.descripcion|truncatechars:120 }}
+                            {% else %}
+                                <em style="color: var(--text-subtle);">Sin descripción adjunta</em>
+                            {% endif %}
+                        </p>
+
+                        <div class="task-card-actions">
+                            <a href="{% url 'task_detail' task.pk %}" class="btn-action btn-ghost-secondary btn-task-action" title="Ver detalle">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                Ver
+                            </a>
+                            <a href="{% url 'task_update' task.pk %}" class="btn-action btn-ghost-edit btn-task-action" title="Editar tarea">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                Editar
+                            </a>
+                            <a href="{% url 'task_delete' task.pk %}" class="btn-action btn-ghost-danger btn-task-action" title="Eliminar tarea">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                Eliminar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12" id="initial-empty-state">
+                    <div class="empty-state-box">
+                        <div class="empty-state-icon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                            </svg>
+                        </div>
+                        <h4 class="empty-state-title">No hay tareas creadas todavía</h4>
+                        <p class="empty-state-desc">Usa el formulario del panel izquierdo para agregar tu primera tarea y comenzar a organizar tu día.</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Mensaje cuando la búsqueda / filtro no arroja resultados -->
+        <div class="empty-state-box" id="no-filter-results" style="display: none; margin-top: 10px;">
+            <div class="empty-state-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </div>
+            <h4 class="empty-state-title">No se encontraron tareas</h4>
+            <p class="empty-state-desc">No hay tareas que coincidan con los filtros o el término de búsqueda ingresado.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Cálculo dinámico de métricas del Dashboard
+    const cards = Array.from(document.querySelectorAll('.task-card-col'));
+    const totalEl = document.getElementById('metric-total-count');
+    const pendingEl = document.getElementById('metric-pending-count');
+    const progressEl = document.getElementById('metric-progress-count');
+    const completedEl = document.getElementById('metric-completed-count');
+
+    const totalCount = cards.length;
+    let pendingCount = 0;
+    let progressCount = 0;
+    let completedCount = 0;
+
+    cards.forEach(card => {
+        const estado = card.getAttribute('data-estado');
+        if (estado === 'pendiente') pendingCount++;
+        else if (estado === 'en_progreso') progressCount++;
+        else if (estado === 'completada') completedCount++;
+    });
+
+    if (totalEl) totalEl.textContent = totalCount;
+    if (pendingEl) pendingEl.textContent = pendingCount;
+    if (progressEl) progressEl.textContent = progressCount;
+    if (completedEl) completedEl.textContent = completedCount;
+
+    // 2. Filtro y Búsqueda en Vivo
+    const searchInput = document.getElementById('task-search-input');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const noResultsBox = document.getElementById('no-filter-results');
+    let activeFilter = 'all';
+
+    function applyFilterAndSearch() {
+        const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const estado = card.getAttribute('data-estado');
+            const title = card.getAttribute('data-title') || '';
+            const desc = card.getAttribute('data-desc') || '';
+
+            const matchesFilter = (activeFilter === 'all' || estado === activeFilter);
+            const matchesQuery = query === '' || title.includes(query) || desc.includes(query);
+
+            if (matchesFilter && matchesQuery) {
+                card.style.display = '';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        if (noResultsBox) {
+            noResultsBox.style.display = (visibleCount === 0 && totalCount > 0) ? 'block' : 'none';
+        }
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', applyFilterAndSearch);
+    }
+
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeFilter = btn.getAttribute('data-filter');
+            applyFilterAndSearch();
+        });
+    });
+});
+</script>
+{% endblock %}

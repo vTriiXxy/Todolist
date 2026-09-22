@@ -1,61 +1,394 @@
-/* 1. Estilos Globales (El Lienzo) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+/* ==========================================================================
+   TASKFLOW MODERN DESIGN SYSTEM (Vanilla CSS)
+   ========================================================================== */
 
-body {
-    background-color: #F9FAFB; /* Gris suave de fondo */
-    font-family: 'Inter', sans-serif;
-    color: #374151; /* Gris oscuro para texto */
-    margin: 0;
-    padding: 20px;
+:root {
+    /* Brand Colors */
+    --primary: #4F46E5;
+    --primary-hover: #4338CA;
+    --primary-light: #EEF2FF;
+    --primary-border: #C7D2FE;
+    
+    /* Neutrals */
+    --bg-body: #F8FAFC;
+    --bg-surface: #FFFFFF;
+    --bg-surface-subtle: #F1F5F9;
+    --border-light: #E2E8F0;
+    --border-focus: #818CF8;
+    
+    /* Typography */
+    --text-main: #0F172A;
+    --text-muted: #64748B;
+    --text-subtle: #94A3B8;
+    
+    /* Semantic Status - Pendiente */
+    --status-pending-bg: #FEF3C7;
+    --status-pending-text: #92400E;
+    --status-pending-border: #FDE68A;
+    --status-pending-dot: #F59E0B;
+
+    /* Semantic Status - En Progreso */
+    --status-progress-bg: #EFF6FF;
+    --status-progress-text: #1E40AF;
+    --status-progress-border: #BFDBFE;
+    --status-progress-dot: #3B82F6;
+
+    /* Semantic Status - Completada */
+    --status-completed-bg: #ECFDF5;
+    --status-completed-text: #065F46;
+    --status-completed-border: #A7F3D0;
+    --status-completed-dot: #10B981;
+
+    /* Danger / Action */
+    --danger: #EF4444;
+    --danger-hover: #DC2626;
+    --danger-bg: #FEE2E2;
+    --danger-text: #991B1B;
+
+    /* Shadows & Elevations */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+    --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.08);
+    --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+    --shadow-hover: 0 14px 25px -4px rgba(15, 23, 42, 0.10), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+    
+    /* Transitions */
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 2. El Componente "Tarjeta" (Contenedor Principal) */
-.card {
-    background-color: #FFFFFF; /* Fondo blanco puro */
-    border: none; /* Sin bordes */
-    border-radius: 12px; /* Bordes redondeados */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Sombra sutil */
-    padding: 24px; /* Relleno generoso */
+/* Base Reset & Typography */
+* {
+    box-sizing: border-box;
+}
+
+body.app-body {
+    background-color: var(--bg-body);
+    font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    height: 100%; /* Asegura que las tarjetas en una fila tengan la misma altura */
+    -webkit-font-smoothing: antialiased;
 }
 
-/* 3. Tipografía (Jerarquía) */
-.main-title {
-    font-size: 2rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    text-align: center;
-    margin-bottom: 40px;
+/* ==========================================================================
+   1. NAVBAR HEADER
+   ========================================================================== */
+.navbar-header {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-light);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 12px 24px;
 }
 
-.section-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 16px;
-    text-align: center;
+.navbar-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.task-title {
-    font-weight: 700;
-    margin-bottom: 8px;
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--text-main);
+    transition: var(--transition);
+}
+
+.navbar-brand:hover {
+    text-decoration: none;
+    color: var(--primary);
+}
+
+.brand-icon {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+    color: #FFFFFF;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+}
+
+.brand-title {
     font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
 }
 
-.task-description {
-    flex-grow: 1; /* Empuja los botones hacia abajo */
-    color: #4B5563;
-    font-size: 1rem;
-    margin-bottom: 16px;
+.brand-title strong {
+    color: var(--primary);
+    font-weight: 800;
 }
 
-/* 4. Elementos de Formulario (¡CRÍTICO!) */
-.form-label {
-    font-size: 0.9rem;
+.brand-badge {
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: 1px solid var(--primary-border);
+}
+
+.navbar-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.meta-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
     font-weight: 600;
-    color: #718096; /* Gris más claro */
+    color: var(--text-muted);
+    background: var(--bg-surface-subtle);
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border-light);
+}
+
+/* ==========================================================================
+   2. MAIN LAYOUT WRAPPER & HEADERS
+   ========================================================================== */
+.main-wrapper {
+    flex: 1;
+    max-width: 1280px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 32px 24px 60px;
+}
+
+.page-header-block {
+    margin-bottom: 28px;
+}
+
+.page-headline {
+    font-size: 1.85rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--text-main);
+    margin-bottom: 6px;
+}
+
+.page-subheadline {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* ==========================================================================
+   3. METRIC STATS DASHBOARD
+   ========================================================================== */
+.metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.metric-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: var(--transition);
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: #CBD5E1;
+}
+
+.metric-icon-box {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.metric-card.total .metric-icon-box {
+    background: #EEF2FF;
+    color: #4F46E5;
+}
+.metric-card.pending .metric-icon-box {
+    background: var(--status-pending-bg);
+    color: var(--status-pending-text);
+}
+.metric-card.in-progress .metric-icon-box {
+    background: var(--status-progress-bg);
+    color: var(--status-progress-text);
+}
+.metric-card.completed .metric-icon-box {
+    background: var(--status-completed-bg);
+    color: var(--status-completed-text);
+}
+
+.metric-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.metric-number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--text-main);
+}
+
+.metric-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-top: 2px;
+}
+
+/* ==========================================================================
+   4. CONTROLS & FILTER BAR
+   ========================================================================== */
+.controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 24px;
+    background: var(--bg-surface);
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-xs);
+}
+
+.search-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 240px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-subtle);
+    pointer-events: none;
+}
+
+.search-input {
+    width: 100%;
+    padding: 9px 12px 9px 38px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    background: var(--bg-surface-subtle);
+    color: var(--text-main);
+    transition: var(--transition);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.filter-pills {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    padding: 7px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.filter-btn:hover {
+    background: var(--bg-surface-subtle);
+    color: var(--text-main);
+}
+
+.filter-btn.active {
+    background: var(--primary);
+    color: #FFFFFF;
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
+}
+
+/* ==========================================================================
+   5. CARDS & GENERAL CONTAINERS
+   ========================================================================== */
+.card-panel {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+    padding: 26px;
+    margin-bottom: 24px;
+    transition: var(--transition);
+}
+
+.card-panel-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text-main);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-panel-title svg {
+    color: var(--primary);
+}
+
+/* ==========================================================================
+   6. FORMS & INPUTS
+   ========================================================================== */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-label {
     display: block;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: #334155;
     margin-bottom: 6px;
 }
 
@@ -63,117 +396,487 @@ body {
 .form-select,
 .form-textarea {
     width: 100%;
-    padding: 12px 14px; /* Relleno interno */
-    border: 1px solid #D1D5DB; /* Borde sutil */
-    border-radius: 8px; /* Bordes redondeados */
-    font-size: 1rem;
-    color: #374151;
+    padding: 10px 14px;
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    font-size: 0.92rem;
+    font-family: inherit;
+    color: var(--text-main);
     background-color: #FFFFFF;
-    box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: var(--transition);
+    box-sizing: border-box;
 }
 
 .form-textarea {
-    min-height: 120px;
+    min-height: 105px;
     resize: vertical;
 }
 
 .form-input:focus,
 .form-select:focus,
 .form-textarea:focus {
-    outline: none; /* Quita el resplandor por defecto */
-    border-color: #4F46E5; /* Borde de color de acento */
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); /* Resplandor suave */
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
-.form-group {
-    margin-bottom: 16px;
+.form-input::placeholder,
+.form-textarea::placeholder {
+    color: var(--text-subtle);
 }
 
-/* 5. Botones */
-.btn {
-    padding: 12px 16px;
-    border: none;
-    border-radius: 8px;
+/* Errors */
+.form-error {
+    color: var(--danger);
+    font-size: 0.82rem;
     font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-    transition: all 0.2s ease;
-    color: #FFFFFF; /* Texto blanco por defecto para la mayoría */
-}
-
-.btn-primary {
-    background-color: #4F46E5; /* Azul/morado */
-}
-.btn-primary:hover {
-    background-color: #4338CA;
-}
-
-.btn-secondary {
-    background-color: #3B82F6; /* Azul claro */
-}
-.btn-secondary:hover {
-    background-color: #2563EB;
-}
-
-.btn-edit {
-    background-color: #F59E0B; /* Naranja */
-}
-.btn-edit:hover {
-    background-color: #D97706;
-}
-
-.btn-danger {
-    background-color: #EF4444; /* Rojo */
-}
-.btn-danger:hover {
-    background-color: #DC2626;
-}
-
-.btn-cancel {
-    background-color: #E5E7EB; /* Gris claro */
-    color: #374151; /* Texto gris oscuro */
-}
-.btn-cancel:hover {
-    background-color: #D1D5DB;
-}
-
-.button-group {
+    margin-top: 5px;
     display: flex;
-    gap: 12px;
+    align-items: center;
+    gap: 4px;
+}
+
+.alert-danger {
+    background-color: var(--danger-bg);
+    border: 1px solid #FECACA;
+    color: var(--danger-text);
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   7. BUTTONS
+   ========================================================================== */
+.btn-action {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    margin-top: auto; /* Empuja el grupo de botones al final de la tarjeta */
-    padding-top: 16px;
-}
-
-/* 6. Etiquetas de Estado (Píldoras) */
-.status-tag {
-    padding: 4px 10px;
-    border-radius: 9999px; /* Forma de píldora */
-    font-size: 0.8rem;
+    gap: 8px;
+    padding: 10px 18px;
+    font-size: 0.9rem;
     font-weight: 600;
-    display: inline-block;
-    text-transform: capitalize;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none !important;
+    transition: var(--transition);
+    white-space: nowrap;
 }
 
-.status-pending { /* Pendiente */
-    background-color: #FEF3C7; /* Fondo amarillo pálido */
-    color: #92400E; /* Texto amarillo oscuro */
+.btn-primary-gradient {
+    background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%);
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
 }
 
-.status-in-progress { /* En Progreso */
-    background-color: #D1FAE5; /* Fondo verde pálido */
-    color: #065F46; /* Texto verde oscuro */
+.btn-primary-gradient:hover {
+    background: linear-gradient(135deg, #4338CA 0%, #4F46E5 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
 }
 
-.status-completed { /* Completada */
-    background-color: #DBEAFE; /* Fondo azul pálido */
-    color: #1E40AF; /* Texto azul oscuro */
+.btn-ghost-secondary {
+    background: var(--bg-surface-subtle);
+    color: #334155 !important;
+    border-color: var(--border-light);
 }
 
-.status-container {
+.btn-ghost-secondary:hover {
+    background: #E2E8F0;
+    color: var(--text-main) !important;
+}
+
+.btn-ghost-edit {
+    background: #FFFBEB;
+    color: #B45309 !important;
+    border-color: #FDE68A;
+}
+
+.btn-ghost-edit:hover {
+    background: #FEF3C7;
+    color: #92400E !important;
+}
+
+.btn-ghost-danger {
+    background: #FEF2F2;
+    color: var(--danger) !important;
+    border-color: #FECACA;
+}
+
+.btn-ghost-danger:hover {
+    background: #FEE2E2;
+    color: var(--danger-hover) !important;
+}
+
+.btn-solid-danger {
+    background: var(--danger);
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25);
+}
+
+.btn-solid-danger:hover {
+    background: var(--danger-hover);
+    box-shadow: 0 6px 14px rgba(239, 68, 68, 0.35);
+}
+
+/* ==========================================================================
+   8. TASK CARD DESIGN
+   ========================================================================== */
+.task-item-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-light);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.task-item-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+    border-color: #CBD5E1;
+}
+
+/* Indicador lateral sutil de estado */
+.task-item-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 4px;
+    transition: var(--transition);
+}
+
+.task-item-card[data-estado="pendiente"]::before {
+    background-color: var(--status-pending-dot);
+}
+.task-item-card[data-estado="en_progreso"]::before {
+    background-color: var(--status-progress-dot);
+}
+.task-item-card[data-estado="completada"]::before {
+    background-color: var(--status-completed-dot);
+}
+
+.task-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.task-date-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+/* Status Badges */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    border: 1px solid transparent;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.status-pill.pendiente {
+    background-color: var(--status-pending-bg);
+    color: var(--status-pending-text);
+    border-color: var(--status-pending-border);
+}
+.status-pill.pendiente .status-dot {
+    background-color: var(--status-pending-dot);
+}
+
+.status-pill.en_progreso {
+    background-color: var(--status-progress-bg);
+    color: var(--status-progress-text);
+    border-color: var(--status-progress-border);
+}
+.status-pill.en_progreso .status-dot {
+    background-color: var(--status-progress-dot);
+}
+
+.status-pill.completada {
+    background-color: var(--status-completed-bg);
+    color: var(--status-completed-text);
+    border-color: var(--status-completed-border);
+}
+.status-pill.completada .status-dot {
+    background-color: var(--status-completed-dot);
+}
+
+.task-card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--text-main);
+    margin-bottom: 8px;
+}
+
+.task-card-body {
+    flex-grow: 1;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 18px;
+    word-break: break-word;
+}
+
+.task-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-light);
+    margin-top: auto;
+}
+
+.btn-task-action {
+    padding: 6px 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+/* ==========================================================================
+   9. EMPTY STATE
+   ========================================================================== */
+.empty-state-box {
+    background: var(--bg-surface);
+    border: 2px dashed var(--border-light);
+    border-radius: 16px;
+    padding: 48px 24px;
     text-align: center;
-    margin-bottom: 16px;
+    color: var(--text-muted);
+}
+
+.empty-state-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 16px;
+    background: var(--bg-surface-subtle);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-subtle);
+}
+
+.empty-state-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 6px;
+}
+
+.empty-state-desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   10. DETAIL, EDIT & DELETE PAGES
+   ========================================================================== */
+.center-container {
+    max-width: 680px;
+    margin: 20px auto 0;
+}
+
+.breadcrumb-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-bottom: 18px;
+    transition: var(--transition);
+}
+
+.breadcrumb-back:hover {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.detail-header {
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+}
+
+.detail-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 10px;
+}
+
+.detail-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.detail-description-box {
+    background: var(--bg-surface-subtle);
+    border-radius: 12px;
+    padding: 18px 20px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #334155;
+    margin-bottom: 26px;
+    border: 1px solid var(--border-light);
+}
+
+.detail-actions-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Delete Confirmation Modal / Card */
+.delete-card {
+    text-align: center;
+    padding: 36px 30px;
+}
+
+.delete-warning-icon {
+    width: 64px;
+    height: 64px;
+    background: #FEE2E2;
+    color: #EF4444;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+}
+
+.delete-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 10px;
+}
+
+.delete-target-title {
+    background: var(--bg-surface-subtle);
+    padding: 8px 16px;
+    border-radius: 8px;
+    display: inline-block;
+    font-weight: 700;
+    color: #1E293B;
+    margin: 10px 0 20px;
+    border: 1px solid var(--border-light);
+}
+
+/* ==========================================================================
+   11. FOOTER
+   ========================================================================== */
+.app-footer {
+    border-top: 1px solid var(--border-light);
+    background: #FFFFFF;
+    padding: 24px 20px;
+    text-align: center;
+    font-size: 0.86rem;
+    margin-top: auto;
+    line-height: 1.6;
+}
+
+.footer-signature {
+    color: var(--text-main);
+    font-weight: 500;
+    margin: 0 0 4px;
+}
+
+.footer-signature strong,
+.footer-author-link {
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.footer-author-link:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+.footer-subsignature {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    margin: 0;
+}
+
+.footer-license-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.footer-license-link:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   12. RESPONSIVE
+   ========================================================================== */
+@media (max-width: 991px) {
+    .metrics-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .metrics-row {
+        grid-template-columns: 1fr;
+    }
+    .controls-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filter-pills {
+        justify-content: space-between;
+        width: 100%;
+    }
+    .filter-btn {
+        flex: 1;
+        text-align: center;
+        padding: 6px 8px;
+        font-size: 0.78rem;
+    }
+    .navbar-meta {
+        display: none;
+    }
 }
